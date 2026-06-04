@@ -1,0 +1,52 @@
+name: Pipeline de Integração Contínua (CI)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  validacao-codigo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obter Codigo do Repositorio (Checkout)
+        uses: actions/checkout@v3
+
+      - name: Simular Analise de Linter
+        run: |
+          echo "Iniciando analise de linter..."
+          echo "Codigo formatado com sucesso! Nao foram encontrados erros de estilo."
+
+      - name: Simular Analise de Testes Automatizados
+        run: |
+          echo "Executando testes unitarios basicos..."
+          echo "Todos os testes passaram com sucesso! (100% de cobertura)."
+
+      - name: Executar Build Real do Docker
+        run: |
+          echo "Iniciando o build da imagem Docker para validar a estrutura do projeto..."
+          docker build -t minha-app-pucrs:latest .
+          echo "Build concluido com sucesso! A imagem Docker esta integra."
+
+      - name: Simular Controle de Qualidade (Quality Gate)
+        run: |
+          echo "Verificando metricas de qualidade do codigo..."
+          echo "Quality Gate APROVADO."
+
+  deploy-simulado:
+    needs: validacao-codigo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy em Ambiente de Desenvolvimento (DEV)
+        run: echo "Aplicacao implantada com sucesso no ambiente DEV!"
+
+      - name: Deploy em Ambiente de Testes (TST)
+        run: echo "Aplicacao implantada com sucesso no ambiente TST!"
+
+      - name: Deploy em Ambiente de Homologacao (HOL)
+        run: echo "Aplicacao implantada com sucesso no ambiente HOL!"
+
+      - name: Deploy em Ambiente de Producao (PRD)
+        run: echo "Aplicacao implantada com sucesso no ambiente PRD! Zero downtime garantido."
