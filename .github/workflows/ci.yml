@@ -44,8 +44,8 @@ jobs:
       - name: Validar Sintaxe dos Arquivos (Terraform Validate)
         run: terraform validate
 
-  # Job 3: Realiza o empacotamento real da aplicacao utilizando o Docker
-  build-conteiner:
+# Job 3: Realiza o empacotamento e executa testes reais no container localmente no runner
+  build-e-teste-conteiner:
     needs: [validacao-aplicacao, validacao-infraestrutura]
     runs-on: ubuntu-latest
     steps:
@@ -56,17 +56,42 @@ jobs:
         run: |
           echo "=> Construindo artefato imutavel com Docker..."
           docker build -t minha-app-pucrs:${{ github.sha }} .
-          echo "[SUCCESS] Imagem Docker gerada e testada localmente com sucesso."
 
-  # Job 4: Simula a esteira de implantacao progressiva apos o sucesso de todas as validacoes
-  deploy-ambientes:
-    needs: build-conteiner
+      - name: Dar permissão de execução ao Script de Deploy
+        run: chmod +x ./deploy.sh
+
+      - name: Executar Script de Deploy e Testar Container de Produção
+        run: ./deploy.sh ${{ github.sha }}
+
+      - name: Limpar Container de Teste do Runner
+        run: |
+          echo "=> Derrubando infraestrutura local do runner pós-teste..."
+          docker stop app_pucrs_prod
+          docker rm app_pucrs_prod
+
+  # Job 4: Simula a analise de seguranca do container gerado
+  seguranca-container:
+    needs: build-e-teste-conteiner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simular Scan de Vulnerabilidades (SAST/DAST)
+        run: |
+          echo "=> Analisando a imagem Docker em busca de vulnerabilidades (CVEs)..."
+          echo "[SUCCESS] Nenhum risco critico encontrado. Imagem aprovada para deploy."
+
+  # Job 5: Gerencia a Entrega Continua (CD) simulando a esteira progressiva de deploy nos ambientes organizacionais
+  entrega-continua-cd:
+    needs: build-e-teste-conteiner
     runs-on: ubuntu-latest
     strategy:
       matrix:
         ambiente: [DEV, TST, HOL, PRD]
     steps:
-      - name: Simular Deploy Progressivo
+      - name: Simular Implantacao nos Ambientes Organizacionais
         run: |
-          echo "=> Iniciando processo de implantacao automatizada..."
-          echo "[DEPLOY] Aplicacao implantada com total sucesso no ambiente de: ${{ matrix.ambiente }}"
+          echo "================================================================"
+          echo "=> Iniciando processo de implantacao automatizada via CD..."
+          echo "[DEPLOY] Extraindo imagem tag ${{ github.sha }} do registro."
+          echo "[CONFIG] Aplicando itens de configuracao atualizados via Git Baseline."
+          echo "[SUCCESS] Aplicacao implantada com total sucesso no ambiente de: ${{ matrix.ambiente }}"
+          echo "================================================================"

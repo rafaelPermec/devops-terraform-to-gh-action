@@ -6,7 +6,7 @@ FROM nginx:1.25-alpine
 # 1. Definição de metadados seguindo as especificações globais da OCI (Open Containers Initiative)
 LABEL org.opencontainers.image.title="PUCRS DevOps na Pratica - Fase 1" \
       org.opencontainers.image.description="Container otimizado para o empacotamento do site estatico da PUCRS" \
-      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.version="2.0.0" \
       org.opencontainers.image.authors="Rafael Permec"
 
 # 2. Configuração do diretório de trabalho padrão do servidor Nginx

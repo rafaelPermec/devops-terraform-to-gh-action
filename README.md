@@ -1,8 +1,8 @@
-## DevOps na Prática - Fase 1 (PUCRS)
+## DevOps na Prática - Fase 2 (PUCRS)
 
 ### _Aluno_: Rafael Perdigão Melo Castro
 
-Este repositório contém a entrega da **Fase 1 - Configuração e Automação Inicial** da disciplina DevOps na Prática.
+Este repositório contém a entrega da **Fase 2 - Implementação de Pipeline de Deploy** da disciplina DevOps na Prática.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -27,16 +27,17 @@ A estrutura de arquivos do projeto adota o princípio de separação de responsa
 devops-terraform-to-gh-action/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml          # Motor do Pipeline de Integração Contínua (GitHub Actions)
+│       └── ci.yml
 ├── src/
-│   ├── index.html          # Código-fonte principal da aplicação web
-│   └── 404.html            # Página de erro customizada para o servidor web
-├── Dockerfile              # Receita para construção do container da aplicação
-├── providers.tf            # Configuração dos provedores mínimos do Terraform
-├── variables.tf            # Centralização das variáveis de ambiente da infraestrutura
-├── main.tf                 # Declaração dos recursos computacionais (Bucket S3)
-├── outputs.tf              # Exposição de dados resultantes do provisionamento
-└── README.md               # Documentação oficial do projeto
+│   ├── index.html
+│   └── 404.html
+├── Dockerfile
+├── deploy.sh
+├── main.tf
+├── providers.tf
+├── variables.tf
+├── outputs.tf
+└── README.md
 ```
 
 ## ☁️ Estrutura de Infraestrutura como Código (Terraform)
@@ -71,7 +72,8 @@ docker build -t app-pucrs-local .
 
 # 2. Executar o container mapeando a porta 80
 docker run -d -p 8080:80 --name site-pucrs app-pucrs-local
-Abra o seu navegador e acesse: http://localhost:8080
+
+# Abra o seu navegador e acesse: http://localhost:8080
 ```
 
 Validando a Infraestrutura Terraform
